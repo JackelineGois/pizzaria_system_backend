@@ -1,5 +1,6 @@
 import prisma from "../../../prisma/index";
 import { compare } from "bcryptjs";
+import { sign } from "jsonwebtoken";
 
 interface AuthLogin {
   email: string;
@@ -25,7 +26,24 @@ class AuthUserService {
     }
 
     //gerar um token JWT e devolver os dados do usuário como id, name e email
-    return { passwordMatch };
+
+    const token = sign(
+      {
+        name: userLogin.name,
+        email: userLogin.email,
+      },
+      process.env.JWT_SECRET,
+      {
+        subject: userLogin.id,
+        expiresIn: "30d",
+      }
+    );
+    return {
+      id: userLogin.id,
+      name: userLogin.name,
+      email: userLogin.email,
+      token: token,
+    };
   }
 }
 
