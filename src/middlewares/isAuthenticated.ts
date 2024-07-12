@@ -22,10 +22,10 @@ export function isAuthenticated(
   try {
     //Verifing if the tokes exists and is valid
     const { sub } = verify(token, process.env.JWT_SECRET) as PayLoad;
-    console.log(sub);
+    req.user_id = sub;
   } catch (err) {
-
     return res.status(401).end();
   }
+
   next();
 }
